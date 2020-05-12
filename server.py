@@ -5,13 +5,32 @@ port = 10000
 if len(sys.argv) > 1:
   port = int(sys.argv[1])
 
-# Create a TCP/IP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# Bind the socket to the address given on the command line
-server_address = ('', port)
-sock.bind(server_address)
+addr = ("0.0.0.0", port)  # all interfaces, port 8080
+if socket.has_dualstack_ipv6():
+    sock = socket.create_server(addr, family=socket.AF_INET6, dualstack_ipv6=True)
+else:
+    sock = socket.create_server(addr)
 sock.listen(10)
+
+#HOST = None               # Symbolic name meaning all available interfaces
+#s = None
+#for res in socket.getaddrinfo(HOST, port, socket.AF_UNSPEC, socket.SOCK_STREAM, 0, socket.AI_PASSIVE):
+#    af, socktype, proto, canonname, sa = res
+#    try:
+#        s = socket.socket(af, socktype, proto)
+#    except OSError as msg:
+#        s = None
+#        continue
+#    try:
+#        s.bind(sa)
+#        s.listen(10)
+#    except OSError as msg:
+#        s.close()
+#        s = None
+#        continue
+#    break
+#
+#sock = s
 
 while True:
   print('waiting for a connection')
